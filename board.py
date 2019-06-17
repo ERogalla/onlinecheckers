@@ -61,11 +61,9 @@ class Board:
 				if i-2>=0 and j-2>=0 and (isinstance(self.board[i-1][j-1], Check) and not self.board[i-1][j-1].white) and self.board[i-2][j-2] == 0:
 					self.pos.append((x-107,y-108))
 					self.takepos.append((i-2,j-2))
-					print("left pos",i-2,j-2)
 				if i-2>=0 and j+2<8 and (isinstance(self.board[i-1][j+1], Check) and not self.board[i-1][j+1].white) and self.board[i-2][j+2] == 0:
 					self.pos.append((x+153,y-108))
 					self.takepos.append((i-2,j+2))
-					print("right pos",i-2,j+2)
 
 			elif not self.board[i][j].white and not currentW:
 				if i+1>=0 and j-1>=0 and self.board[i+1][j-1] == 0:
@@ -77,13 +75,9 @@ class Board:
 				if i+2>=0 and j-2>=0 and (isinstance(self.board[i+1][j-1], Check) and self.board[i+1][j-1].white) and self.board[i+2][j-2] == 0:
 					self.pos.append((x-107,y+152))
 					self.takepos.append((i+2,j-2))
-					print("left pos",i+2,j-2)
 				if i+2>=0 and j+2<8 and (isinstance(self.board[i+1][j+1], Check) and self.board[i+1][j+1].white) and self.board[i+2][j+2] == 0:
 					self.pos.append((x+153,y+152))
 					self.takepos.append((i+2,j+2))
-					print("right pos",i+2,j+2)
-
-
 
 	def checkandmove(self,i,j):
 		for po in self.posibilities:
