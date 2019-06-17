@@ -10,8 +10,8 @@ class Board:
 		self.rows = rows
 		self.cols = cols
 		self.select = (-1,-1)
+		self.coordpos = []
 		self.pos = []
-		self.posibilities = []
 		self.takepos = []
 		self.board = [[0 for x in range(8)] for _ in range(rows)]
 
@@ -50,47 +50,86 @@ class Board:
 		x = j / 8 * 520 + 118
 		y = i / 8 * 520 + 118
 
-		if isinstance(self.board[i][j], Check):
+		if isinstance(self.board[i][j], Check) or isinstance(self.board[i][j], Queen):
 			if self.board[i][j].white and currentW:
-				if i-1>=0 and j-1>=0 and (self.board[i-1][j-1] == 0) :
-					self.pos.append((x-42,y-43))
-					self.posibilities.append((i-1,j-1))
-				if i-1>=0 and j+1<8 and (self.board[i-1][j+1] == 0):
-					self.pos.append((x+88,y-43))
-					self.posibilities.append((i-1,j+1))
-				if i-2>=0 and j-2>=0 and (isinstance(self.board[i-1][j-1], Check) and not self.board[i-1][j-1].white) and self.board[i-2][j-2] == 0:
-					self.pos.append((x-107,y-108))
-					self.takepos.append((i-2,j-2))
-				if i-2>=0 and j+2<8 and (isinstance(self.board[i-1][j+1], Check) and not self.board[i-1][j+1].white) and self.board[i-2][j+2] == 0:
-					self.pos.append((x+153,y-108))
-					self.takepos.append((i-2,j+2))
-
+				self.checkW(i,j,x,y,currentW)
+				if isinstance(self.board[i][j], Queen):
+					self.checkB(i,j,x,y,currentW)		
 			elif not self.board[i][j].white and not currentW:
-				if i+1>=0 and j-1>=0 and self.board[i+1][j-1] == 0:
-					self.pos.append((x-42,y+87))
-					self.posibilities.append((i+1,j-1))
-				if i+1>=0 and j+1<8 and self.board[i+1][j+1] == 0:
-					self.pos.append((x+88,y+87))
-					self.posibilities.append((i+1,j+1))
-				if i+2>=0 and j-2>=0 and (isinstance(self.board[i+1][j-1], Check) and self.board[i+1][j-1].white) and self.board[i+2][j-2] == 0:
-					self.pos.append((x-107,y+152))
-					self.takepos.append((i+2,j-2))
-				if i+2>=0 and j+2<8 and (isinstance(self.board[i+1][j+1], Check) and self.board[i+1][j+1].white) and self.board[i+2][j+2] == 0:
-					self.pos.append((x+153,y+152))
-					self.takepos.append((i+2,j+2))
+				self.checkB(i,j,x,y,currentW)
+				if isinstance(self.board[i][j], Queen):
+					self.checkW(i,j,x,y,currentW)				
 
-	def checkandmove(self,i,j):
-		for po in self.posibilities:
+	def checkW(self,i,j,x,y,currentW):
+		if i-1>=0 and j-1>=0 and (self.board[i-1][j-1] == 0) :
+			self.moveupleft(i,j,x,y)
+		if i-1>=0 and j+1<8 and (self.board[i-1][j+1] == 0):
+			self.moveupright(i,j,x,y)
+		if i-2>=0 and j-2>=0 and ((isinstance(self.board[i-1][j-1], Check) or isinstance(self.board[i-1][j-1], Queen)) and self.board[i-1][j-1].white is not currentW) and self.board[i-2][j-2] == 0:
+			self.takeupleft(i,j,x,y)
+		if i-2>=0 and j+2<8 and ((isinstance(self.board[i-1][j+1], Check) or isinstance(self.board[i-1][j+1], Queen)) and self.board[i-1][j+1].white is not currentW) and self.board[i-2][j+2] == 0:
+			self.takeupright(i,j,x,y)
+
+	def checkB(self,i,j,x,y,currentW):
+		if i+1<8 and j-1>=0 and self.board[i+1][j-1] == 0:
+			self.movedownleft(i,j,x,y)
+		if i+1<8 and j+1<8 and self.board[i+1][j+1] == 0:
+			self.movedownright(i,j,x,y)
+		if i+2<8 and j-2>=0 and ((isinstance(self.board[i+1][j-1], Check) or isinstance(self.board[i+1][j-1], Queen)) and self.board[i+1][j-1].white is not currentW) and self.board[i+2][j-2] == 0:
+			self.takedownleft(i,j,x,y)
+		if i+2<8 and j+2<8 and ((isinstance(self.board[i+1][j+1], Check) or isinstance(self.board[i+1][j+1], Queen)) and self.board[i+1][j+1].white is not currentW) and self.board[i+2][j+2] == 0:
+			self.takedownright(i,j,x,y)
+
+	def moveupleft(self,i,j,x,y):
+		self.coordpos.append((x-42,y-43))
+		self.pos.append((i-1,j-1))
+
+	def moveupright(self,i,j,x,y):
+		self.coordpos.append((x+88,y-43))
+		self.pos.append((i-1,j+1))
+
+	def movedownleft(self,i,j,x,y):
+		self.coordpos.append((x-42,y+87))
+		self.pos.append((i+1,j-1))
+
+	def movedownright(self,i,j,x,y):
+		self.coordpos.append((x+88,y+87))
+		self.pos.append((i+1,j+1))
+
+	def takeupleft(self,i,j,x,y):
+		self.coordpos.append((x-107,y-108))
+		self.takepos.append((i-2,j-2))
+
+	def takeupright(self,i,j,x,y):
+		self.coordpos.append((x+153,y-108))
+		self.takepos.append((i-2,j+2))
+
+	def takedownleft(self,i,j,x,y):
+		self.coordpos.append((x-107,y+152))
+		self.takepos.append((i+2,j-2))
+
+	def takedownright(self,i,j,x,y):
+		self.coordpos.append((x+153,y+152))
+		self.takepos.append((i+2,j+2))
+
+	def checkandmove(self,i,j,currentW):
+		for po in self.pos:
 			if i == po[0] and j == po[1]:
-				self.move(i,j)
+				if (currentW and i == 0) or (not currentW and i==7):
+					self.promote(i,j,currentW)
+				else:
+					self.move(i,j)
+				currentW = not currentW
 				return True
 
-	def takeandmove(self,i,j):
+	def takeandmove(self,i,j,currentW):
 		for po in self.takepos:
 			if i == po[0] and j == po[1]:
 				self.remove(int((self.select[0]+i)/2),int((self.select[1]+j)/2))
-				self.move(i,j)
-
+				if (currentW and i == 0) or (not currentW and i==7):
+					self.promote(i,j,currentW)
+				else:
+					self.move(i,j)
 				return True
 
 	def remove(self, i,j):
@@ -101,21 +140,29 @@ class Board:
 		self.board[self.select[0]][self.select[1]].move(i,j)
 		self.board[i][j] = self.board[self.select[0]][self.select[1]]
 		self.board[self.select[0]][self.select[1]] = 0
+		self.coordpos = []
 		self.pos = []
-		self.posibilities = []
+		self.takepos = []
+		self.select = (-1,-1)
+
+	def promote(self,i,j,currentW):
+		self.board[self.select[0]][self.select[1]] = 0
+		self.board[i][j] = Queen(i,j,currentW)
+		self.coordpos = []
+		self.pos = []
 		self.takepos = []
 		self.select = (-1,-1)
 
 	def close(self, i, j):
 		self.board[i][j].switch()
 		self.select = (-1,-1)
+		self.coordpos = []
 		self.pos = []
-		self.posibilities = []
 				
 	def draw(self, win):
 		for i in range(self.rows):
 			for j in range(self.cols):
 				if self.board[i][j] != 0:
 					self.board[i][j].draw(win)
-		for i in self.pos:
+		for i in self.coordpos:
 			pygame.draw.rect(win,(255,0,0), (i[0],i[1],15,15),5)	

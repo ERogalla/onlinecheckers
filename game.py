@@ -58,9 +58,9 @@ def main():
 						else:
 							bo.close(i,j)
 				else: 
-					if bo.checkandmove(i,j):
+					if bo.checkandmove(i,j,currentW):
 						currentW = not currentW
-					if bo.takeandmove(i,j):
+					if bo.takeandmove(i,j,currentW):
 						pass
 		pygame.display.update()
 
