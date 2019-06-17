@@ -46,7 +46,6 @@ def main():
 			if event.type == pygame.MOUSEBUTTONDOWN:
 				pos = pygame.mouse.get_pos()
 				i,j = click(pos)
-				print(i,j)
 				if bo.board[i][j] != 0:
 					if bo.board[i][j].white and currentW:
 						if not bo.board[i][j].selected:
@@ -58,7 +57,6 @@ def main():
 							bo.show_pos(win,i,j,currentW)
 						else:
 							bo.close(i,j)
-
 				else: 
 					if bo.checkandmove(i,j):
 						currentW = not currentW

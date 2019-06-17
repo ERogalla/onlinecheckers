@@ -12,7 +12,7 @@ class Board:
 		self.select = (-1,-1)
 		self.pos = []
 		self.posibilities = []
-		self.osposibilities = []
+		self.takepos = []
 		self.board = [[0 for x in range(8)] for _ in range(rows)]
 
 		self.board[0][0] = Check(0,0,False)
@@ -60,11 +60,13 @@ class Board:
 					self.posibilities.append((i-1,j+1))
 				if i-2>=0 and j-2>=0 and (isinstance(self.board[i-1][j-1], Check) and not self.board[i-1][j-1].white) and self.board[i-2][j-2] == 0:
 					self.pos.append((x-107,y-108))
-					self.osposibilities.append((i-2,j-2))
+					self.takepos.append((i-2,j-2))
+					print("left pos",i-2,j-2)
 				if i-2>=0 and j+2<8 and (isinstance(self.board[i-1][j+1], Check) and not self.board[i-1][j+1].white) and self.board[i-2][j+2] == 0:
 					self.pos.append((x+153,y-108))
-					self.osposibilities.append((i-2,j+2))
-					
+					self.takepos.append((i-2,j+2))
+					print("right pos",i-2,j+2)
+
 			elif not self.board[i][j].white and not currentW:
 				if i+1>=0 and j-1>=0 and self.board[i+1][j-1] == 0:
 					self.pos.append((x-42,y+87))
@@ -74,10 +76,13 @@ class Board:
 					self.posibilities.append((i+1,j+1))
 				if i+2>=0 and j-2>=0 and (isinstance(self.board[i+1][j-1], Check) and self.board[i+1][j-1].white) and self.board[i+2][j-2] == 0:
 					self.pos.append((x-107,y+152))
-					self.osposibilities.append((i+2,j-2))
+					self.takepos.append((i+2,j-2))
+					print("left pos",i+2,j-2)
 				if i+2>=0 and j+2<8 and (isinstance(self.board[i+1][j+1], Check) and self.board[i+1][j+1].white) and self.board[i+2][j+2] == 0:
 					self.pos.append((x+153,y+152))
-					self.osposibilities.append((i+2,j+2))
+					self.takepos.append((i+2,j+2))
+					print("right pos",i+2,j+2)
+
 
 
 	def checkandmove(self,i,j):
@@ -87,7 +92,7 @@ class Board:
 				return True
 
 	def takeandmove(self,i,j):
-		for po in self.osposibilities:
+		for po in self.takepos:
 			if i == po[0] and j == po[1]:
 				self.remove(int((self.select[0]+i)/2),int((self.select[1]+j)/2))
 				self.move(i,j)
@@ -104,6 +109,7 @@ class Board:
 		self.board[self.select[0]][self.select[1]] = 0
 		self.pos = []
 		self.posibilities = []
+		self.takepos = []
 		self.select = (-1,-1)
 
 	def close(self, i, j):
